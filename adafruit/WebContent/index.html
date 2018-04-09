@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+	style='border: 1px solid #81B411;border-collapse: collapse;width: 34%;' border='1'
+	.tblBorder
+	{
+	  border: 1px solid #81B411;border-collapse: collapse;width: 34%;'
+	}
+	.tblTr
+	{
+	background-color: #81B411;
+	}
+</style>
+<body>
+
+<h2 style="text-align:center; color:white; background-color: black">Adafruit Best Seller products</h2>
+<p style="text-align:center; color:white; background-color: black">Best Seller Product</p>
+<p id="best"></p>
+<p></p>
+<p style="text-align:center; color:white; background-color: black">Well Seller Product</p>
+<p id="well"></p>
+<p></p>
+<p style="text-align:center; color:white; background-color: black">Common Seller Product</p>
+<p id="common"></p>
+
+<script>
+
+var xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        var myObj = JSON.parse(this.responseText);
+        
+        var best = myObj.bestSeller;
+        var well = myObj.wellSeller;
+        var common = myObj.commonSeller;
+        
+        console.log(best[0]);
+        console.log(well[0]);
+        console.log(common[0]);
+        
+        var output = "";
+        var buildTable_best = table(best);
+        var buildTable_well = table(well);
+        var buildTable_common = table(common);
+        
+        function table(list){
+        	var buildTable = "";
+        	buildTable += "<table class='tblBorder'>";
+            buildTable += "<tr><th>Product ID</th><th>Product name</th><th>Stock</th><th>Product Url</th></tr>";
+            for(var i = 0; i<list.length; i++){
+            	buildTable += "<tr style='text-align: center;'>";
+                buildTable += "<td>'" + list[i]["item_id"] + "'</td>";
+                buildTable += "<td>'" + list[i]["name"] + "'</td>";
+                if(list[i]["stock"] == -1){
+                	buildTable += "<td>'" + "in stock" + "'</td>";
+                }else if(list[i]["stock"] == 0){
+                	buildTable += "<td>'" + "out of stock" + "'</td>";
+                }else{
+                	 buildTable += "<td>'" + list[i]["stock"] + "'</td>";
+                }
+                buildTable += "<td>'" + list[i]["url"] + "'</td>";
+                buildTable += "</tr>";
+            }
+            return buildTable;
+        }
+        
+        document.getElementById("best").innerHTML = buildTable_best;
+        document.getElementById("well").innerHTML = buildTable_well;
+        document.getElementById("common").innerHTML = buildTable_common;
+    }
+};
+var url = "./search";
+xmlhttp.open("GET", url, true);
+xmlhttp.send();
+
+</script>
+
+</body>
+</html>
